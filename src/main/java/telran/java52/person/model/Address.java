@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode
 @Embeddable // второй вариант как встроить в таблицу родителя
-public class Addres implements Serializable {
+public class Address implements Serializable {
 	private static final long serialVersionUID = -4731041582279975648L;
 	String city;
 	String street;

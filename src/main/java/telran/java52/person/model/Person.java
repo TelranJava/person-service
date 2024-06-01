@@ -25,5 +25,5 @@ public class Person implements Serializable{
 	LocalDate birthDate;
 	@Setter
 //	@Embedded // встроить адрес а эту таблицу
-	Addres address;
+	Address address;
 }
