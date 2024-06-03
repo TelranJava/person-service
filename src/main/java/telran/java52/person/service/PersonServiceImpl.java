@@ -37,6 +37,7 @@ public class PersonServiceImpl implements PersonService {
 		return modelMapper.map(person, PersonDto.class);
 	}
 
+	@Transactional
 	@Override
 	public PersonDto updateName(Integer personId, String newName) {
 		Person person = personRepository.findById(personId).orElseThrow(PersonNotFoundException::new);
@@ -47,7 +48,7 @@ public class PersonServiceImpl implements PersonService {
 		return modelMapper.map(person, PersonDto.class);
 	}
 
-	
+	@Transactional
 	@Override
 	public PersonDto updateAddress(Integer personId, AddresDto newAddres) {
 		Person person = personRepository.findById(personId).orElseThrow(PersonNotFoundException::new);
@@ -59,6 +60,7 @@ public class PersonServiceImpl implements PersonService {
 		return modelMapper.map(person, PersonDto.class);
 	}
 
+	@Transactional
 	@Override
 	public PersonDto deletePersonById(Integer personId) {
 		Person person = personRepository.findById(personId).orElseThrow(PersonNotFoundException::new);
@@ -68,20 +70,22 @@ public class PersonServiceImpl implements PersonService {
 
 	@Override
 	public Iterable<PersonDto> findPersonsByCity(String city) {
-		return personRepository.findPersonsByAddressCity(city).stream().map(p -> modelMapper.map(p, PersonDto.class)).toList();
+		return personRepository.findPersonsByAddressCityIgnoreCase(city).stream()
+				.map(p -> modelMapper.map(p, PersonDto.class)).toList();
 	}
 
 	@Override
-	public Iterable<PersonDto> findPersonsByAges(Integer minAge, Integer maxAge) {
-		LocalDate minDate = LocalDate.now().minusYears(minAge.longValue());
-		LocalDate maxDate = LocalDate.now().minusYears(maxAge.longValue());
+	public Iterable<PersonDto> findPersonsByAges(Integer from, Integer to) {
+		LocalDate minDate = LocalDate.now().minusYears(to.longValue());
+		LocalDate maxDate = LocalDate.now().minusYears(from.longValue());
 		return personRepository.findPersonsByBirthDateBetween(minDate, maxDate).stream()
 				.map(p -> modelMapper.map(p, PersonDto.class)).toList();
 	}
 
 	@Override
 	public Iterable<PersonDto> findPersonsByName(String name) {
-		return personRepository.findPersonsByName(name).stream().map(p -> modelMapper.map(p, PersonDto.class)).toList();
+		return personRepository.findPersonsByNameIgnoreCase(name).stream().map(p -> modelMapper.map(p, PersonDto.class))
+				.toList();
 	}
 
 	@Override

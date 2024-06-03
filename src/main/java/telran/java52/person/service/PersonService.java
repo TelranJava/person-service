@@ -17,7 +17,7 @@ public interface PersonService {
 
 	Iterable<PersonDto> findPersonsByCity(String city);
 
-	Iterable<PersonDto> findPersonsByAges(Integer minAge, Integer maxAge);
+	Iterable<PersonDto> findPersonsByAges(Integer from, Integer to);
 
 	Iterable<PersonDto> findPersonsByName(String name);
 
