@@ -5,7 +5,8 @@ import java.time.LocalDate;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -16,16 +17,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @EqualsAndHashCode(of = "id")
-@Entity(name="Citizen") // это будет сущность таблицы
-@Table(name="person") // название таблицы с которой будут связяны сущности
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED )
+// SINGLE_TABLE - одна общая таблица для всех - минус часть полей null
+// TABLE_PER_CLASS - отдельная таблица для каждого класса - минус больше селектов придется делать, потому что в каждую таблицу нужно писать свой
+// JOINED - one to many - минус потеря производительности изза множества join
 public class Person implements Serializable{
 	private static final long serialVersionUID = -4035220012537609590L;
-	@Id // тут она обязательна для SQL primary key
+	@Id 
 	Integer id;
 	@Setter
 	String name;
 	LocalDate birthDate;
 	@Setter
-//	@Embedded // встроить адрес а эту таблицу
 	Address address;
 }
