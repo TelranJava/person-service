@@ -32,3 +32,5 @@ public class Person implements Serializable{
 	@Setter
 	Address address;
 }
+//если используется наследование то в PersonController, PersonService и тд лучше использовать массивы 
+// если возвращается множество потому что jackson парсит некорректно все List Iterable и тд
