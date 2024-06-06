@@ -2,7 +2,6 @@ package telran.java52.person.service;
 
 import java.time.LocalDate;
 
-import org.apache.tomcat.util.collections.ManagedConcurrentWeakHashMap;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
@@ -24,6 +23,7 @@ import telran.java52.person.model.Person;
 public class PersonServiceImpl implements PersonService, CommandLineRunner {
 	final PersonRepository personRepository;
 	final ModelMapper modelMapper;
+	final PersonModelDtoMapper mapper;
 
 	@Transactional
 	@Override
@@ -31,7 +31,7 @@ public class PersonServiceImpl implements PersonService, CommandLineRunner {
 		if (personRepository.existsById(personDto.getId())) {
 			return false;
 		}
-		personRepository.save(modelMapper.map(personDto, Person.class));
+		personRepository.save(mapper.mapToModel(personDto));
 		return true;
 	}
 
@@ -39,7 +39,7 @@ public class PersonServiceImpl implements PersonService, CommandLineRunner {
 	@Override
 	public PersonDto findPersonById(Integer personId) {
 		Person person = personRepository.findById(personId).orElseThrow(PersonNotFoundException::new);
-		return modelMapper.map(person, PersonDto.class);
+		return mapper.mapToDto(person);
 	}
 
 	@Transactional
@@ -49,7 +49,7 @@ public class PersonServiceImpl implements PersonService, CommandLineRunner {
 		if (!newName.isEmpty() && !newName.isBlank()) {
 			person.setName(newName);
 		}
-		return modelMapper.map(person, PersonDto.class);
+		return mapper.mapToDto(person);
 	}
 
 	@Transactional
@@ -60,7 +60,7 @@ public class PersonServiceImpl implements PersonService, CommandLineRunner {
 				&& !newAddres.getStreet().isBlank() && !newAddres.getStreet().isEmpty()) {
 			person.setAddress(modelMapper.map(newAddres, Address.class));
 		}
-		return modelMapper.map(person, PersonDto.class);
+		return mapper.mapToDto(person);
 	}
 
 	@Transactional
@@ -68,37 +68,40 @@ public class PersonServiceImpl implements PersonService, CommandLineRunner {
 	public PersonDto deletePersonById(Integer personId) {
 		Person person = personRepository.findById(personId).orElseThrow(PersonNotFoundException::new);
 		personRepository.deleteById(personId);
-		return modelMapper.map(person, PersonDto.class);
+		return mapper.mapToDto(person);
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public Iterable<PersonDto> findPersonsByCity(String city) {
-		return personRepository.findPersonsByAddressCityIgnoreCase(city).map(p -> modelMapper.map(p, PersonDto.class))
-				.toList();
+	public PersonDto[] findPersonsByCity(String city) {
+		return personRepository.findPersonsByAddressCityIgnoreCase(city)
+				.map(p -> mapper.mapToDto(p))
+				.toArray(PersonDto[]::new);
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public Iterable<PersonDto> findPersonsByAges(Integer min, Integer max) {
+	public PersonDto[] findPersonsByAges(Integer min, Integer max) {
 		LocalDate minDate = LocalDate.now().minusYears(max.longValue());
 		LocalDate maxDate = LocalDate.now().minusYears(min.longValue());
 		return personRepository.findPersonsByBirthDateBetween(minDate, maxDate)
-				.map(p -> modelMapper.map(p, PersonDto.class)).toList();
+				.map(p -> mapper.mapToDto(p))
+				.toArray(PersonDto[]::new);
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public Iterable<PersonDto> findPersonsByName(String name) {
-		return personRepository.findPersonsByNameIgnoreCase(name).map(p -> modelMapper.map(p, PersonDto.class))
-				.toList();
+	public PersonDto[]  findPersonsByName(String name) {
+		return personRepository.findPersonsByNameIgnoreCase(name)
+				.map(p -> mapper.mapToDto(p))
+				.toArray(PersonDto[]::new);
 	}
 
 	@Override
-	public Iterable<CityPopulationDto> getCityPopulation(String city) {
+	public CityPopulationDto[] getCityPopulation(String city) {
 		return personRepository.getCitiesPopulation(city);
 	}
-
+	
 	@Override
 	public void run(String... args) throws Exception {
 		if (personRepository.count() == 0) {

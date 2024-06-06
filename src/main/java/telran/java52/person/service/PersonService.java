@@ -15,11 +15,11 @@ public interface PersonService {
 
 	PersonDto deletePersonById(Integer personId);
 
-	Iterable<PersonDto> findPersonsByCity(String city);
+	PersonDto[] findPersonsByCity(String city);
 
-	Iterable<PersonDto> findPersonsByAges(Integer from, Integer to);
+	PersonDto[] findPersonsByAges(Integer from, Integer to);
 
-	Iterable<PersonDto> findPersonsByName(String name);
+	PersonDto[]  findPersonsByName(String name);
 
-	Iterable<CityPopulationDto> getCityPopulation(String city);
+	CityPopulationDto[] getCityPopulation(String city);
 }
