@@ -1,5 +1,7 @@
 package telran.java52.person.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -64,7 +66,7 @@ public class PersonController {
 	}
 
 	@GetMapping("/population/{city}")
-	public CityPopulationDto[] getCityPopulation(@PathVariable String city) {
+	public List<CityPopulationDto> getCityPopulation(@PathVariable String city) {
 		return personService.getCityPopulation(city);
 	}
 

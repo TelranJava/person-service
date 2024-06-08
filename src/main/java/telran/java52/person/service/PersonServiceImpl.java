@@ -1,6 +1,7 @@
 package telran.java52.person.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
@@ -100,7 +101,7 @@ public class PersonServiceImpl implements PersonService, CommandLineRunner {
 	}
 
 	@Override
-	public CityPopulationDto[] getCityPopulation(String city) {
+	public List<CityPopulationDto> getCityPopulation(String city) {
 		return personRepository.getCitiesPopulation(city);
 	}
 
