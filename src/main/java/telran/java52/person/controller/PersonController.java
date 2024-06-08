@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import telran.java52.person.dto.AddresDto;
+import telran.java52.person.dto.AddressDto;
+import telran.java52.person.dto.ChildDto;
 import telran.java52.person.dto.CityPopulationDto;
+import telran.java52.person.dto.EmployeeDto;
 import telran.java52.person.dto.PersonDto;
 import telran.java52.person.service.PersonService;
 
@@ -25,7 +27,7 @@ public class PersonController {
 	public boolean addPerson(@RequestBody PersonDto personDto) {
 		return personService.addPerson(personDto);
 	}
-	
+
 	@GetMapping("/{id}")
 	public PersonDto findPersonById(@PathVariable Integer id) {
 		return personService.findPersonById(id);
@@ -37,7 +39,7 @@ public class PersonController {
 	}
 
 	@PutMapping("/{id}/address")
-	public PersonDto updateAddress(@PathVariable Integer id, @RequestBody AddresDto newAddres) {
+	public PersonDto updateAddress(@PathVariable Integer id, @RequestBody AddressDto newAddres) {
 		return personService.updateAddress(id, newAddres);
 	}
 
@@ -64,5 +66,15 @@ public class PersonController {
 	@GetMapping("/population/{city}")
 	public CityPopulationDto[] getCityPopulation(@PathVariable String city) {
 		return personService.getCityPopulation(city);
+	}
+
+	@GetMapping("/children")
+	public PersonDto[] findAllChildren() {
+		return personService.findAllChildren();
+	}
+
+	@GetMapping("/salary/{from}/{to}")
+	public PersonDto[] findEmployeesBySalary(@PathVariable Integer from, @PathVariable Integer to) {
+		return personService.findEmployeesBySalary(from, to);
 	}
 }

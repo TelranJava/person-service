@@ -9,8 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import telran.java52.person.dao.PersonRepository;
-import telran.java52.person.dto.AddresDto;
+import telran.java52.person.dto.AddressDto;
+import telran.java52.person.dto.ChildDto;
 import telran.java52.person.dto.CityPopulationDto;
+import telran.java52.person.dto.EmployeeDto;
 import telran.java52.person.dto.PersonDto;
 import telran.java52.person.dto.exceptions.PersonNotFoundException;
 import telran.java52.person.model.Address;
@@ -54,7 +56,7 @@ public class PersonServiceImpl implements PersonService, CommandLineRunner {
 
 	@Transactional
 	@Override
-	public PersonDto updateAddress(Integer personId, AddresDto newAddres) {
+	public PersonDto updateAddress(Integer personId, AddressDto newAddres) {
 		Person person = personRepository.findById(personId).orElseThrow(PersonNotFoundException::new);
 		if (newAddres.getBuilding() > 0 && !newAddres.getCity().isBlank() && !newAddres.getCity().isEmpty()
 				&& !newAddres.getStreet().isBlank() && !newAddres.getStreet().isEmpty()) {
@@ -101,6 +103,26 @@ public class PersonServiceImpl implements PersonService, CommandLineRunner {
 	public CityPopulationDto[] getCityPopulation(String city) {
 		return personRepository.getCitiesPopulation(city);
 	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public ChildDto[] findAllChildren() {
+//		return personRepository.findPersonsByType(Child.class)
+//				.map(p -> mapper.mapToDto(p))
+//				.toArray(PersonDto[]::new);
+		return personRepository.findAllChildrenBy()
+				.map(p -> mapper.mapToDto(p))
+				.toArray(ChildDto[]::new);
+				
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public EmployeeDto[] findEmployeesBySalary(Integer from, Integer to) {
+		return personRepository.findBySalaryBetween(from, to)
+				.map(p -> mapper.mapToDto(p))
+				.toArray(EmployeeDto[]::new);
+	}
 	
 	@Override
 	public void run(String... args) throws Exception {
@@ -117,5 +139,4 @@ public class PersonServiceImpl implements PersonService, CommandLineRunner {
 		}
 
 	}
-
 }

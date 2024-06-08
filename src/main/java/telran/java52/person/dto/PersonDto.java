@@ -21,5 +21,5 @@ public class PersonDto {
 	Integer id;
 	String name;
 	LocalDate birthDate;
-	AddresDto address;
+	AddressDto address;
 }
